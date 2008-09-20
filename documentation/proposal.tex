@@ -1,0 +1,84 @@
+\documentclass[12pt,letterpaper]{article}
+
+\usepackage{pxfonts}
+
+\title{Basic Sudoku}
+\author{Analie-Jade Carri\`ere \and Ling Lin}
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+Sudoku is a number puzzle made up of a 9X9 grid subdivided into 9 3X3
+boxes. The solved puzzle must contain numbers from 1 to 9 in each row,
+each column and each 3X3 box which cannot be repeated. Usually, a
+partially completed grid is presented to the user.
+
+\section{Goals}
+
+Our primary goal is to build a basic Sudoku game with two use cases.
+
+\begin{itemize}
+\item
+The first case would be to generate a blank puzzle where the user can
+input his/her own numbers. At this point, the user would be able to
+choose one of two options. The first option would be to have the user
+solve the puzzle. The second option would be to have the puzzle solve
+itself.
+
+The puzzle can be read from a file or directly input by the user. The
+input can come from different sources such as newspapers or the
+internet. Therefore, the user will be able to transcribe the newspaper
+grid into either a file or directly into the grid. The input numbers
+will then be locked into the grid and displayed in red. When the user
+is ready to play, each of his/her moves will be validated by our
+program.
+
+\item
+The second case would be to generate a puzzle displaying randomly
+generated numbers. The user would then solve the puzzle.
+\end{itemize}
+
+
+\section{C++ Features}
+
+The C++ features we will be using are STL, loops, iterators, stacks
+and vectors.
+
+ 
+\section{Incremental Deliverables}
+
+\subsection{Basic version}
+
+\begin{enumerate}
+\item Display a blank grid using Ncurses.
+
+\item Allow the user to build the initial grid by inputting numbers either
+  by entering them directly into the grid or by importing them through
+  a file.
+
+\item The original numbers entered by the user will be locked and
+  displayed in red.
+
+\item Subsequently, each user input will be validated according to the
+  current grid.
+
+\item Write an algorithm to solve the puzzle.
+\end{enumerate}
+
+\subsection{Advanced version}
+
+\begin{enumerate}
+
+\item Automatically generate an initial puzzle with a unique solution, and
+  let the user play.
+
+\item Solve the puzzle and display the solution onto the screen or save it
+  into a file.
+
+\item Implement degrees of difficulty.
+
+\end{enumerate}
+
+\end{document}
