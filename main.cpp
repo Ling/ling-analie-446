@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
   Board board;
   Cursor cursor(&board);
   board.draw();
+  cursor.draw();
   while( ( ch=getch() ) != 'q' )
     {
 
@@ -17,18 +18,18 @@ int main(int argc, char *argv[])
         }
         else if( ch == KEY_RIGHT )
         {
-	  cursor.moveLeft();
+	  cursor.moveRight();
         }
         else if( ch == KEY_DOWN  )
         {
-	  cursor.moveLeft();
+	  cursor.moveDown();
         }
         else if( ch == KEY_UP    )
         {
-	  cursor.moveLeft();
+	  cursor.moveUp();
 	}
        
-       board.draw();
+       //board.draw();
        cursor.draw();
     }
 

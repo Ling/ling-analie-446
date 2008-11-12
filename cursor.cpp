@@ -36,6 +36,7 @@ void Cursor::moveRight(){
 
 void Cursor::draw()const{
 
-  mvprintw( board->getSquareX(x), board->getSquareY(y), "{");
-  mvprintw( board->getSquareX(x), board->getSquareY(y)+2, "}");
+  mvprintw( board->getSquareY(y), board->getSquareX(x), "{");
+  mvprintw( board->getSquareY(y), board->getSquareX(x)+2, "}");
+  move(board->getSquareY(y), board->getSquareX(x)+1);
 }
