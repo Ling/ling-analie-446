@@ -7,7 +7,7 @@ using namespace std;
 const string Board::LINE_THIN="+---+---+---++---+---+---++---+---+---+";
 const string Board::LINE_THICK="+===+===+===++===+===+===++===+===+===+";
 
-Board::Board():cursor(new Cursor())
+Board::Board():cursor(new Cursor()), board(9*9)
 {
     initscr( ); //Turn on ncurses
     noecho( );  //Don't echo characters

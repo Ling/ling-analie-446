@@ -2,6 +2,7 @@
 #define _BOARD_H_
 
 #include <string>
+#include <vector>
 #include "cursor.h"
 
 class Board{
@@ -23,7 +24,7 @@ class Board{
     private:
         void clearBoard();
 
-        int board[9*9];
+        std::vector<int> board;
         Cursor* cursor;
 
         const static std::string LINE_THIN, LINE_THICK;
