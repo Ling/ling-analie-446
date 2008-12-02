@@ -21,6 +21,7 @@ Board::Board():cursor(new Cursor()), board(9*9)
     init_pair( COLOR_ROW_COL, COLOR_BLUE, COLOR_BLACK );
     init_pair( COLOR_ERROR, COLOR_WHITE, COLOR_RED  );
     init_pair( COLOR_ERROR_ROW_COL, COLOR_BLUE, COLOR_RED );
+    init_pair( COLOR_NUMBER, COLOR_GREEN, COLOR_BLACK );
 
     clearBoard();
 
@@ -40,7 +41,7 @@ void Board::drawAll()const
 {
     int row = 0, col=0;
     clear();
-    attron( COLOR_PAIR( 1 ) );
+    attron( COLOR_PAIR( COLOR_NORMAL ) );
     attron( A_BOLD );
     mvprintw( row, col+4, "1   2   3    4   5   6    7   8   9" );
     attroff( A_BOLD );
@@ -89,7 +90,10 @@ void Board::drawNumbers()const
                 oss<<number;
             else
                 oss<<" ";
+
+            attron( COLOR_PAIR( COLOR_NUMBER ) );
             mvprintw( getSquareY(j), Board::getSquareX(i)+1, oss.str().c_str());
+            attron( COLOR_PAIR( COLOR_NORMAL ) );
         }
     return;
 }

@@ -20,7 +20,7 @@ class Board{
         static int getSquareX(int x);
         static int getSquareY(int y);
 
-        enum Color {COLOR_NORMAL=1, COLOR_ROW_COL, COLOR_ERROR, COLOR_ERROR_ROW_COL};
+        enum Color {COLOR_NORMAL=1, COLOR_ROW_COL, COLOR_ERROR, COLOR_ERROR_ROW_COL,COLOR_NUMBER};
     private:
         void clearBoard();
 
