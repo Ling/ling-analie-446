@@ -2,21 +2,29 @@
 #define _BOARD_H_
 
 #include <string>
+#include "cursor.h"
 
 class Board{
- public:
-  Board();
-  ~Board();
-  void draw();
-  int getSquareX(int x)const;
-  int getSquareY(int y)const;
+    public:
+        Board();
+        ~Board();
 
-  enum Color {COLOR_NORMAL=1, COLOR_ROW_COL, COLOR_ERROR, COLOR_ERROR_ROW_COL};
- private:
-  int board[81];
+        void play();
+        void drawAll()const;
+        void draw()const;
+        void drawNumbers()const;
 
-  const static std::string LINE_THIN, LINE_THICK;
-  
+        void setNumber(int value);
+
+        static int getSquareX(int x);
+        static int getSquareY(int y);
+
+        enum Color {COLOR_NORMAL=1, COLOR_ROW_COL, COLOR_ERROR, COLOR_ERROR_ROW_COL};
+    private:
+        int board[9*9];
+        Cursor* cursor;
+
+        const static std::string LINE_THIN, LINE_THICK;
 };
 
 

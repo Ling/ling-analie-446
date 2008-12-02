@@ -1,26 +1,26 @@
 #ifndef _CURSOR_H_
 #define _CURSOR_H_
 
-#include "board.h"
-
 class Cursor{
- public:
-  Cursor(Board* board);
-  void moveUp();
-  void moveDown();
-  void moveRight();
-  void moveLeft();
-  void draw()const;
+    public:
+        Cursor();
+        void moveUp();
+        void moveDown();
+        void moveRight();
+        void moveLeft();
+        void draw()const;
 
- private:
+        int getX()const{return x;}
+        int getY()const{return y;}
 
-  static const char *const LEFT_CHARACTER;
-  static const char *const RIGHT_CHARACTER;
+    private:
 
-  int x, y;
-  int oldx, oldy;
-  Board* board;
-  
+        static const char *const LEFT_CHARACTER;
+        static const char *const RIGHT_CHARACTER;
+
+        int x, y;
+        int oldx, oldy;
+
 };
 
 #endif
