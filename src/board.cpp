@@ -109,10 +109,10 @@ void Board::play()
             case '5': case '6': case '7': case '8': case '9':
                 setNumber(ch);
                 break;
-            case 'c':
+            case 'C':
                 clearBoard();
                 break;
-            case 'r':
+            case 'R':
                 drawAll();
                 break;
             case KEY_LEFT:
