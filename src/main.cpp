@@ -28,8 +28,6 @@ int main(int argc, char *argv[])
         {
 	  cursor.moveUp();
 	}
-       
-       board.draw();
        cursor.draw();
     }
 

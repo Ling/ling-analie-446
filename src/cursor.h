@@ -11,9 +11,14 @@ class Cursor{
   void moveRight();
   void moveLeft();
   void draw()const;
+
  private:
 
+  static const char *const LEFT_CHARACTER;
+  static const char *const RIGHT_CHARACTER;
+
   int x, y;
+  int oldx, oldy;
   Board* board;
   
 };

@@ -1,42 +1,64 @@
 #include "cursor.h"
 #include "board.h"
 #include <curses.h>
+#include <sstream>
+#include <iomanip>
 
-Cursor::Cursor(Board* board) : x(0), y(0), board(board)
+using namespace std;
+
+const char * const Cursor::LEFT_CHARACTER = "{";
+const char * const Cursor::RIGHT_CHARACTER = "}";
+
+Cursor::Cursor(Board* board) : x(0), y(0), oldx(-1), oldy(-1), board(board)
 {
 }
 
 void Cursor::moveUp(){
-  if(y != 0)
-    y--;
-  else
-    y = 8;
+    oldy = y;
+    oldx = x;
+    if(y != 0)
+        y--;
+    else
+        y = 8;
 }
 
 void Cursor::moveDown(){
-  if(y != 8)
-    y++;
-  else
-    y =0;
+    oldy = y;
+    oldx = x;
+    if(y != 8)
+        y++;
+    else
+        y =0;
 }
 
 void Cursor::moveLeft(){
-  if(x != 0)
-    x--;
-  else
-    x = 8;
+    oldy = y;
+    oldx = x;
+    if(x != 0)
+        x--;
+    else
+        x = 8;
 }
 
 void Cursor::moveRight(){
-  if(x != 8)
-    x++;
-  else
-    x =0;
+    oldy = y;
+    oldx = x;
+    if(x != 8)
+        x++;
+    else
+        x =0;
 }
-
 void Cursor::draw()const{
 
-  mvprintw( board->getSquareY(y), board->getSquareX(x), "{");
-  mvprintw( board->getSquareY(y), board->getSquareX(x)+2, "}");
-  move(board->getSquareY(y), board->getSquareX(x)+1);
+    ostringstream oss;
+    oss << "oldX="<<setw(3)<<oldx<<", oldY="<<setw(3)<<oldy;
+    mvprintw(board->getSquareY(10), 0, oss.str().c_str());
+    if(oldx!=-1 && oldy!=-1)
+    {
+        mvprintw( board->getSquareY(oldy), board->getSquareX(oldx), " ");
+        mvprintw( board->getSquareY(oldy), board->getSquareX(oldx)+2, " ");
+    }
+    mvprintw( board->getSquareY(y), board->getSquareX(x), LEFT_CHARACTER);
+    mvprintw( board->getSquareY(y), board->getSquareX(x)+2, RIGHT_CHARACTER);
+    move(board->getSquareY(y), board->getSquareX(x)+1);
 }
