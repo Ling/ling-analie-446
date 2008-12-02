@@ -9,9 +9,6 @@ const string Board::LINE_THICK="+===+===+===++===+===+===++===+===+===+";
 
 Board::Board():cursor(new Cursor())
 {
-    for(int i = 0; i != 9*9; ++i)
-        board[i] =0;
-
     initscr( ); //Turn on ncurses
     noecho( );  //Don't echo characters
     cbreak( );  //input is parsed per character, instead of at endlines.
@@ -25,16 +22,24 @@ Board::Board():cursor(new Cursor())
     init_pair( COLOR_ERROR, COLOR_WHITE, COLOR_RED  );
     init_pair( COLOR_ERROR_ROW_COL, COLOR_BLUE, COLOR_RED );
 
+    clearBoard();
+
 }
 Board::~Board()
 {
     delete cursor;
     endwin();
 }
+void Board::clearBoard()
+{
+    for(int i = 0; i != 9*9; ++i)
+        board[i] =0;
 
+}
 void Board::drawAll()const
 {
     int row = 0, col=0;
+    clear();
     attron( COLOR_PAIR( 1 ) );
     attron( A_BOLD );
     mvprintw( row, col+4, "1   2   3    4   5   6    7   8   9" );
@@ -98,25 +103,30 @@ void Board::play()
     while( ( ch=getch() ) != 'q' )
     {
 
-        if(ch >= '0' && ch <= '9')
+        switch(ch)
         {
-            setNumber(ch);
-        }
-        else if( ch == KEY_LEFT  )
-        {
-            cursor->moveLeft();
-        }
-        else if( ch == KEY_RIGHT )
-        {
-            cursor->moveRight();
-        }
-        else if( ch == KEY_DOWN  )
-        {
-            cursor->moveDown();
-        }
-        else if( ch == KEY_UP    )
-        {
-            cursor->moveUp();
+            case '0': case '1': case '2': case '3': case '4':
+            case '5': case '6': case '7': case '8': case '9':
+                setNumber(ch);
+                break;
+            case 'c':
+                clearBoard();
+                break;
+            case 'r':
+                drawAll();
+                break;
+            case KEY_LEFT:
+                cursor->moveLeft();
+                break;
+            case KEY_RIGHT:
+                cursor->moveRight();
+                break;
+            case KEY_DOWN:
+                cursor->moveDown();
+                break;
+            case KEY_UP:
+                cursor->moveUp();
+                break;
         }
         draw();
     }

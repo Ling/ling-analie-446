@@ -21,6 +21,8 @@ class Board{
 
         enum Color {COLOR_NORMAL=1, COLOR_ROW_COL, COLOR_ERROR, COLOR_ERROR_ROW_COL};
     private:
+        void clearBoard();
+
         int board[9*9];
         Cursor* cursor;
 
