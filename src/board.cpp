@@ -310,8 +310,6 @@ void Board::save(ostream& out)const
    copy(board, board+9*9, ostream_iterator<int>(oss));
    if(oss.str() != string(9*9,'0'))
     out<<oss.str()<<endl;
-   if("hello" == string("hello"))
-      out<<string(10,'1')<<endl;
 }
 int Board::getSquareIndexFromBoardIndex(int index)const
 {
@@ -328,7 +326,7 @@ void Board::loadFile()
 }
 void Board::saveFile()const
 {
-    ofstream ofs("/tmp/sudoku.save");
+    ofstream ofs("/tmp/sudoku.save", ios_base::out | ios_base::trunc);
     save(ofs);
 }
 void Board::play()
