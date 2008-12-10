@@ -15,7 +15,6 @@ class Board{
         void draw()const;
         void drawNumbers()const;
 
-        void setNumber(int value);
 
         static int getSquareX(int x);
         static int getSquareY(int y);
@@ -24,6 +23,8 @@ class Board{
             COLOR_ERROR_ROW_COL,COLOR_NUMBER,COLOR_ERROR_NUMBER};
     private:
         void clearBoard();
+        void setNumber(int value);
+
         bool validate()const;
         bool validateRow(int i)const;
         bool validateCol(int i)const;
@@ -48,7 +49,7 @@ class Board{
         //Y means rows
         int makeIndex(int x, int y)const {return x+y*9;}
         int indexToX(int i)const {return i%9;}
-        int indexToY(int i)const {return i*9;}
+        int indexToY(int i)const {return i/9;}
         int makeIfromSquare(int squareX, int cellX)const{return cellX+squareX*3;}
         //int makeSquareFromI(int i)const{return i/3;}
         //int makeCellFromI(int i)const{return i%3;}

@@ -32,6 +32,7 @@ Board::~Board()
     delete cursor;
     endwin();
 }
+
 void Board::clearBoard()
 {
     for(int i = 0; i != 9*9; ++i){
