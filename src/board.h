@@ -18,7 +18,8 @@ class Board{
 
         void load(std::istream& in);
         void loadFile();
-        void save(std::ostream& in)const;
+        void save(std::ostream& out)const;
+        void saveFile()const;
 
         bool locked(){return is_locked;}
 

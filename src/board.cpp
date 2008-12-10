@@ -4,6 +4,8 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <iterator>
+#include <algorithm>
 
 using namespace std;
 const string Board::LINE_THIN="+---+---+---++---+---+---++---+---+---+";
@@ -300,9 +302,16 @@ void Board::load(istream& in)
     std::copy(buffer, buffer+9*9, fixed);
 
 }
-void Board::save(ostream& in)const
+void Board::save(ostream& out)const
 {
-    
+   copy(fixed, fixed+9*9, ostream_iterator<int>(out)); 
+   out<<endl;
+   ostringstream oss;
+   copy(board, board+9*9, ostream_iterator<int>(oss));
+   if(oss.str() != string(9*9,'0'))
+    out<<oss.str()<<endl;
+   if("hello" == string("hello"))
+      out<<string(10,'1')<<endl;
 }
 int Board::getSquareIndexFromBoardIndex(int index)const
 {
@@ -316,6 +325,11 @@ void Board::loadFile()
 {
     ifstream ifs("levels/level1.sud");
     load(ifs);
+}
+void Board::saveFile()const
+{
+    ofstream ofs("/tmp/sudoku.save");
+    save(ofs);
 }
 void Board::play()
 {
@@ -334,6 +348,9 @@ void Board::play()
                 break;
             case 'C':
                 clearBoard();
+                break;
+            case 'S':
+                saveFile();
                 break;
             case 'X':
                 loadFile();
