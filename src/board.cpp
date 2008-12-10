@@ -2,6 +2,8 @@
 #include <curses.h>
 #include <string>
 #include <sstream>
+#include <fstream>
+#include <iostream>
 
 using namespace std;
 const string Board::LINE_THIN="+---+---+---++---+---+---++---+---+---+";
@@ -273,6 +275,31 @@ bool Board::validPosition(int x, int y)const
              invalidSqs[ ((x/3))+((y/3)*3) ]);
 
 }
+void Board::load(istream& in)
+{
+    if(!in)
+        return;
+
+    string line;
+    getline(in, line);
+    istringstream iss(line);
+    char c;
+    int buffer[9*9];
+    int i = 0;
+    while(i!=9*9)
+    {
+        iss >> c;
+        if(!iss) return;
+        int n = c-'0';
+        if(n >=0 && n  <=9)
+        {
+            buffer[i]=n;
+            ++i;
+        }
+    }
+    std::copy(buffer, buffer+9*9, fixed);
+
+}
 int Board::getSquareIndexFromBoardIndex(int index)const
 {
     int col = indexToX(index);
@@ -280,6 +307,11 @@ int Board::getSquareIndexFromBoardIndex(int index)const
 
     col /=3; row /= 3;
     return col + row*3;
+}
+void Board::loadFile()
+{
+    ifstream ifs("levels/level1.sud");
+    load(ifs);
 }
 void Board::play()
 {
@@ -298,6 +330,9 @@ void Board::play()
                 break;
             case 'C':
                 clearBoard();
+                break;
+            case 'X':
+                loadFile();
                 break;
             case 'L':
                 lockNumbers();
