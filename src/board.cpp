@@ -300,6 +300,10 @@ void Board::load(istream& in)
     std::copy(buffer, buffer+9*9, fixed);
 
 }
+void Board::save(ostream& in)const
+{
+    
+}
 int Board::getSquareIndexFromBoardIndex(int index)const
 {
     int col = indexToX(index);
