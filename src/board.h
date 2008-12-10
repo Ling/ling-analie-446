@@ -20,7 +20,8 @@ class Board{
         static int getSquareX(int x);
         static int getSquareY(int y);
 
-        enum Color {COLOR_NORMAL=1, COLOR_ROW_COL, COLOR_ERROR, COLOR_ERROR_ROW_COL,COLOR_NUMBER};
+        enum Color {COLOR_NORMAL=1, COLOR_ROW_COL, COLOR_ERROR,
+            COLOR_ERROR_ROW_COL,COLOR_NUMBER,COLOR_ERROR_NUMBER};
     private:
         void clearBoard();
         bool validate()const;
@@ -40,6 +41,8 @@ class Board{
         //Utility
 
         void allValid()const;
+        bool validPosition(int x, int y)const;
+        int getSquareIndexFromBoardIndex(int index)const;
 
         //X means cols
         //Y means rows
@@ -47,6 +50,8 @@ class Board{
         int indexToX(int i)const {return i%9;}
         int indexToY(int i)const {return i*9;}
         int makeIfromSquare(int squareX, int cellX)const{return cellX+squareX*3;}
+        //int makeSquareFromI(int i)const{return i/3;}
+        //int makeCellFromI(int i)const{return i%3;}
 
         //Constants
         const static std::string LINE_THIN, LINE_THICK;

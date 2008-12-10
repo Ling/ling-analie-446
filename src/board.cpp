@@ -22,6 +22,7 @@ Board::Board():cursor(new Cursor())
     init_pair( COLOR_ERROR, COLOR_WHITE, COLOR_RED  );
     init_pair( COLOR_ERROR_ROW_COL, COLOR_BLUE, COLOR_RED );
     init_pair( COLOR_NUMBER, COLOR_GREEN, COLOR_BLACK );
+    init_pair( COLOR_ERROR_NUMBER, COLOR_GREEN, COLOR_RED );
 
     clearBoard();
 
@@ -37,6 +38,7 @@ void Board::clearBoard()
         board[i] =0;
         fixed[i] =0;
     }
+    allValid();
 
 }
 void Board::drawAll()const
@@ -71,9 +73,14 @@ void Board::draw()const
     drawNumbers();
     cursor->draw();
     if(validate())
-        mvprintw(getSquareY(10),getSquareX(0),"The board is valid.        ");
+        mvprintw(getSquareY(10),getSquareX(0),"The board is valid.  ");
     else
-        mvprintw(getSquareY(10),getSquareX(0),"The board is invalid.      ");
+    {
+
+        attron( COLOR_PAIR( COLOR_ERROR ) );
+        mvprintw(getSquareY(10),getSquareX(0),"The board is invalid.");
+        attron( COLOR_PAIR( COLOR_NORMAL ) );
+    }
 }
 void Board::setNumber(int value)
 {
@@ -222,14 +229,34 @@ void Board::drawNumbers()const
                 oss<<number;
             else
                 oss<<" ";
-
-            attron( COLOR_PAIR( COLOR_NUMBER ) );
+            
+            if(validPosition(i,j))
+                attron( COLOR_PAIR( COLOR_NUMBER ) );
+            else
+            {
+                attron( A_BOLD );
+                attron( COLOR_PAIR( COLOR_ERROR_NUMBER ) );
+                attroff( A_BOLD );
+            }
             mvprintw( getSquareY(j), Board::getSquareX(i)+1, oss.str().c_str());
             attron( COLOR_PAIR( COLOR_NORMAL ) );
         }
     return;
 }
+bool Board::validPosition(int x, int y)const
+{
+    return !(invalidCols[x]||invalidRows[y]||
+             invalidSqs[ ((x/3))+((y/3)*3) ]);
 
+}
+int Board::getSquareIndexFromBoardIndex(int index)const
+{
+    int col = indexToX(index);
+    int row = indexToY(index);
+
+    col /=3; row /= 3;
+    return col + row*3;
+}
 void Board::play()
 {
     drawAll();
