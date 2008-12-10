@@ -7,7 +7,7 @@ using namespace std;
 const string Board::LINE_THIN="+---+---+---++---+---+---++---+---+---+";
 const string Board::LINE_THICK="+===+===+===++===+===+===++===+===+===+";
 
-Board::Board():cursor(new Cursor()), board(9*9)
+Board::Board():cursor(new Cursor())
 {
     initscr( ); //Turn on ncurses
     noecho( );  //Don't echo characters
@@ -33,8 +33,10 @@ Board::~Board()
 }
 void Board::clearBoard()
 {
-    for(int i = 0; i != 9*9; ++i)
+    for(int i = 0; i != 9*9; ++i){
         board[i] =0;
+        fixed[i] =0;
+    }
 
 }
 void Board::drawAll()const
@@ -68,6 +70,10 @@ void Board::draw()const
 {
     drawNumbers();
     cursor->draw();
+    if(validate())
+        mvprintw(getSquareY(10),getSquareX(0),"The board is valid.        ");
+    else
+        mvprintw(getSquareY(10),getSquareX(0),"The board is invalid.      ");
 }
 void Board::setNumber(int value)
 {
@@ -77,10 +83,136 @@ void Board::setNumber(int value)
     int y = cursor->getY();
 
     board[x+9*y] = number;
+    validate();
+}
+
+void Board::allValid()const
+{
+    for(int i = 0; i!=9; ++i)
+    {
+        invalidRows[i]= invalidCols[i]= invalidSqs[i]= false;
+    }
+}
+
+bool Board::validate()const
+{
+    allValid();
+    for(int i = 0; i != 9; ++i)
+    {
+        if(!validateRow(i))
+            invalidRows[i]=true;
+        if(!validateCol(i))
+            invalidCols[i]=true;
+    }
+    for(int i = 0; i!=3; ++i)
+        for(int j = 0; j!=3; ++j)
+            if(!validateSquare(i,j))
+               invalidSqs[i+j*3]=true;
+    
+    for(int i = 0; i!=9;++i)
+        if(invalidRows[i]||invalidCols[i]||invalidSqs[i])
+            return false;
+    return true;
+}
+
+bool Board::validateRow(int i)const
+{
+    bool used[9];
+    for(int a = 0; a!=9; ++a)used[a]=false;
+
+    for(int c = 0; c!=9 ; ++c)
+    {
+        int index = c+9*i; //find the correct position in the array.
+
+        int value = (fixed[index])? fixed[index] : board[index];
+        if(!value)
+            continue;
+        value--; //we have valued 1..9 but indices 0..8.
+
+        if(used[value])
+            return false;
+        used[value]=true;
+    }
+    return true; //If we get here we didn't return false in the loop so ok.
+}
+/** I am a comment to be replaced */
+bool Board::validateCol(int i)const
+{
+    bool used[9];
+    for(int a = 0; a!=9; ++a)used[a]=false;
+
+    for(int r = 0; r!=9 ; ++r)
+    {
+        int index = r*9+i; //find the correct position in the array.
+
+        int value = (fixed[index])? fixed[index] : board[index];
+        if(!value)
+            continue;
+        value--; //we have valued 1..9 but indices 0..8.
+
+        if(used[value])
+            return false;
+        used[value]=true;
+    }
+    return true; //If we get here we didn't return false in the loop so ok.
+}
+bool Board::validateSquare(int squareX, int squareY)const
+{
+    bool used[9];
+    for(int a = 0; a!=9; ++a)used[a]=false;
+    
+    for(int j = 0; j!=3 ; ++j)
+    {
+        int row = makeIfromSquare(squareY, j); 
+        for(int i = 0; i!=3; ++i)
+        {
+            int col = makeIfromSquare(squareX, i);
+            int index = makeIndex(col,row);
+            int value = valueAt(index);
+            
+            if(!value)
+                continue;
+            value--;
+
+            if(used[value])
+                return false;
+            used[value]=true;
+        }
+    }
+    return true;
+}
+int Board::valueAt(int index)const
+{
+    if(fixed[index])
+        return fixed[index];
+    if(board[index])
+        return board[index];
+    return 0;
 }
 
 void Board::drawNumbers()const
 {
+//    We were testing our calculate methods.
+//    for(int i = 0 ; i != 3; ++i)
+//        for(int j=0 ; j!=3; ++j)
+//            for(int x=0 ; x!=3; ++x)
+//                for(int y=0 ; y!=3; ++y)
+//                {
+//                    int col = makeIfromSquare(i,x);
+//                    int row = makeIfromSquare(j,y);
+//
+//
+//                    int number = 1+x+3*y;
+//                    ostringstream oss;
+//                    if(number)
+//                        oss<<number;
+//                    else
+//                        oss<<" ";
+//
+//                    attron( COLOR_PAIR( COLOR_NUMBER ) );
+//                    mvprintw( getSquareY(row), Board::getSquareX(col)+1, oss.str().c_str());
+//                    attron( COLOR_PAIR( COLOR_NORMAL ) );
+//                }
     for(int i = 0 ; i != 9; ++i)
         for(int j=0 ; j!=9; ++j)
         {

@@ -50,9 +50,9 @@ void Cursor::moveRight(){
 }
 void Cursor::draw()const{
 
-    ostringstream oss;
-    oss << "oldX="<<setw(3)<<oldx<<", oldY="<<setw(3)<<oldy;
-    mvprintw(Board::getSquareY(10), 0, oss.str().c_str());
+//    ostringstream oss;
+//    oss << "oldX="<<setw(3)<<oldx<<", oldY="<<setw(3)<<oldy;
+//    mvprintw(Board::getSquareY(10), 0, oss.str().c_str());
     if(oldx!=-1 && oldy!=-1)
     {
         mvprintw( Board::getSquareY(oldy), Board::getSquareX(oldx), " ");

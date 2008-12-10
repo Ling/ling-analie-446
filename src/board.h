@@ -23,10 +23,32 @@ class Board{
         enum Color {COLOR_NORMAL=1, COLOR_ROW_COL, COLOR_ERROR, COLOR_ERROR_ROW_COL,COLOR_NUMBER};
     private:
         void clearBoard();
+        bool validate()const;
+        bool validateRow(int i)const;
+        bool validateCol(int i)const;
+        bool validateSquare(int squareX, int squareY)const;
 
-        std::vector<int> board;
+        int valueAt(int index)const;
+
+        int board[81];
+        int fixed[81];
+
+        mutable bool invalidRows[9], invalidCols[9], invalidSqs[9];
         Cursor* cursor;
 
+
+        //Utility
+
+        void allValid()const;
+
+        //X means cols
+        //Y means rows
+        int makeIndex(int x, int y)const {return x+y*9;}
+        int indexToX(int i)const {return i%9;}
+        int indexToY(int i)const {return i*9;}
+        int makeIfromSquare(int squareX, int cellX)const{return cellX+squareX*3;}
+
+        //Constants
         const static std::string LINE_THIN, LINE_THICK;
 };
 
