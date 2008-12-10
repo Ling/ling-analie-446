@@ -40,6 +40,7 @@ void Board::clearBoard()
         fixed[i] =0;
     }
     allValid();
+    is_locked=false;
 
 }
 void Board::drawAll()const
@@ -92,6 +93,21 @@ void Board::setNumber(int value)
 
     board[x+9*y] = number;
     validate();
+}
+
+void Board::lockNumbers()
+{
+    //Let's not lock if the player can't input a CORRECT puzzle.
+    if(!validate())
+        return;
+    if(locked())
+        return;
+    for(int i = 0; i!= 9*9; ++i)
+    {
+        fixed[i]=board[i];
+        board[i]=0;
+    }
+    is_locked=true;
 }
 
 void Board::allValid()const
@@ -224,7 +240,14 @@ void Board::drawNumbers()const
     for(int i = 0 ; i != 9; ++i)
         for(int j=0 ; j!=9; ++j)
         {
-            int number = board[i+9*j];
+            bool given = true;
+            int number = fixed[i+9*j];
+            if(!number)
+            {
+                given = false;
+                number = board[i+9*j];
+            }
+            
             ostringstream oss;
             if(number)
                 oss<<number;
@@ -232,11 +255,11 @@ void Board::drawNumbers()const
                 oss<<" ";
             
             if(validPosition(i,j))
-                attron( COLOR_PAIR( COLOR_NUMBER ) );
+                attron( COLOR_PAIR( ((given)?COLOR_NUMBER:COLOR_NORMAL) ) );
             else
             {
                 attron( A_BOLD );
-                attron( COLOR_PAIR( COLOR_ERROR_NUMBER ) );
+                attron( COLOR_PAIR( ((given)?COLOR_ERROR_NUMBER:COLOR_ERROR) ) );
                 attroff( A_BOLD );
             }
             mvprintw( getSquareY(j), Board::getSquareX(i)+1, oss.str().c_str());
@@ -275,6 +298,9 @@ void Board::play()
                 break;
             case 'C':
                 clearBoard();
+                break;
+            case 'L':
+                lockNumbers();
                 break;
             case 'R':
                 drawAll();

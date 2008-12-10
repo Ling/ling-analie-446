@@ -15,6 +15,7 @@ class Board{
         void draw()const;
         void drawNumbers()const;
 
+        bool locked(){return is_locked;}
 
         static int getSquareX(int x);
         static int getSquareY(int y);
@@ -24,6 +25,7 @@ class Board{
     private:
         void clearBoard();
         void setNumber(int value);
+        void lockNumbers();
 
         bool validate()const;
         bool validateRow(int i)const;
@@ -36,6 +38,7 @@ class Board{
         int fixed[81];
 
         mutable bool invalidRows[9], invalidCols[9], invalidSqs[9];
+        bool is_locked;
         Cursor* cursor;
 
 
