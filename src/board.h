@@ -43,11 +43,13 @@ class Board{
         void generateRandomGrid();
         void generateSolution(std::map<int, std::vector<int> >& slnMap);
         std::map< int, std::vector<int> > fillSolutionGrid();
-        std::vector<int> getAllIndicesInSameSquare(int K);
+        std::vector<int> getAllIndicesInSameSquare(int K)const;
         int valueAt(int index)const;
 
         int board[81];
         int fixed[81];
+
+        std::map< int, std::vector<int> > grid;
 
         mutable bool invalidRows[9], invalidCols[9], invalidSqs[9];
         bool is_locked;
