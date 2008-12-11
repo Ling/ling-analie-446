@@ -1,3 +1,4 @@
+/// \file board.cpp
 #include"board.h"
 #include <curses.h>
 #include <string>
@@ -13,6 +14,9 @@ using namespace std;
 const string Board::LINE_THIN="+---+---+---++---+---+---++---+---+---+";
 const string Board::LINE_THICK="+===+===+===++===+===+===++===+===+===+";
 
+/** Create a new sudoku board.
+ *  The board is initially blank and will display a help menu and its validity.
+ */
 Board::Board():cursor(new Cursor())
 {
     initscr( ); //Turn on ncurses
@@ -35,6 +39,11 @@ Board::Board():cursor(new Cursor())
     srand ( time(NULL) );/*initialize random seed*/
 
 }
+
+/**
+ * Ensures we release all resource needed by Board.
+ * Drop the terminal back to it's original status.
+ */
 Board::~Board()
 {
     delete cursor;
@@ -42,7 +51,7 @@ Board::~Board()
 }
 
 /**
- * Clears the grid of all numbers
+ * Clears the grid of all numbers.
  */
 void Board::clearBoard()
 {
@@ -55,8 +64,11 @@ void Board::clearBoard()
 
 }
 
-/**
- * Draws the grid onto the screen
+/** Draws the grid onto the screen.
+ *
+ * This is important is the screen becomes
+ * corrupted. This is essentially needed when the window is resized, the player
+ * will need to tell the game to redraw the board and numbers.
  */
 void Board::drawAll()const
 {
@@ -89,7 +101,8 @@ void Board::drawAll()const
 }
 
 /**
- * Draws
+ * Draws.
+ * Draw will print out the status of the board, the cursor, and the numbers in the board.
  */
 void Board::draw()const
 {
@@ -119,7 +132,7 @@ void Board::drawHelp()const
         "O - Open puzzle",
         "L - Lock numbers",
         "G - Generate a random new puzzle",
-        "V - solVe the current puzzle",
+        "H - Hint",
         "R - Redraw screen"};
 
     for(int k = 0 ; k!=linesSize; ++k)
@@ -155,7 +168,9 @@ void Board::lockNumbers()
 }
 
 /**
- * Initializes the 'invalid' arrays to valid
+ * Initializes the 'invalid' arrays to valid.
+ *
+ * This will set the board state to valid on start and reset.
  */
 void Board::allValid()const
 {
@@ -287,27 +302,6 @@ int Board::valueAt(int index)const
 
 void Board::drawNumbers()const
 {
-    //    We were testing our calculate methods.
-    //    for(int i = 0 ; i != 3; ++i)
-    //        for(int j=0 ; j!=3; ++j)
-    //            for(int x=0 ; x!=3; ++x)
-    //                for(int y=0 ; y!=3; ++y)
-    //                {
-    //                    int col = makeIfromSquare(i,x);
-    //                    int row = makeIfromSquare(j,y);
-    //
-    //
-    //                    int number = 1+x+3*y;
-    //                    ostringstream oss;
-    //                    if(number)
-    //                        oss<<number;
-    //                    else
-    //                        oss<<" ";
-    //
-    //                    attron( COLOR_PAIR( COLOR_NUMBER ) );
-    //                    mvprintw( getSquareY(row), Board::getSquareX(col)+1, oss.str().c_str());
-    //                    attron( COLOR_PAIR( COLOR_NORMAL ) );
-    //                }
     for(int i = 0 ; i != 9; ++i)
         for(int j=0 ; j!=9; ++j)
         {
@@ -338,6 +332,12 @@ void Board::drawNumbers()const
         }
     return;
 }
+/// Helper function for display.
+///
+/// A valid position is one that is not inside a row, column, or square with diplicate numbers.
+/// \param x The x co-ordinare to check.
+/// \param y The y co-ordinate to check.
+/// \return Whether the position should be ok, or highlighted as an error.
 bool Board::validPosition(int x, int y)const
 {
     return !(invalidCols[x]||invalidRows[y]||
@@ -346,7 +346,16 @@ bool Board::validPosition(int x, int y)const
 }
 
 /**
- * Inserts the text file into the fixed grid array
+ * Loads a file into the playing board.
+ *
+ * The file format is simple, a blank in the board is denoted by 0, and a given
+ * number is denoted by it's character. For example, 6 in the board will be the
+ * character '6' in the file. The line of text will contain all 81 positions in
+ * the board ordered from left to right, and top to bottom.
+ *
+ * \param in A stream containing one or two lines. The first line will contain
+ * the puzzle and the optional second line has the player's progress to the
+ * solution
  */
 void Board::load(istream& in)
 {
@@ -388,9 +397,12 @@ void Board::save(ostream& out)const
         out<<oss.str()<<endl;
 }
 
-/**
- *
- */
+/// Helper function for computations.
+///
+/// If we look at the board as a 3 by 3 grid or 3 by 3 squares, and
+/// further, a total grid of numbers that is 9 by 9. This function maps
+/// row and column co-ordinates from the board level, to thw row and
+/// column of the square is belongs to.
 int Board::getSquareIndexFromBoardIndex(int index)const
 {
     int col = indexToX(index);
@@ -488,7 +500,7 @@ void Board::play()
                 generateRandomGrid();
                 drawAll();
                 break;
-            case 'V':
+            case 'H':
                 generateSolution(grid);
                 break;
             case KEY_LEFT:
@@ -694,16 +706,21 @@ void Board::generateSolution(map<int, vector<int> >& slnMap)
         }
     }
 
+    bool truth = false;
     for(int i = 0; i != 81; ++i){
         int sz = slnMap[i].size();/*size of the remaining vector*/
         if(sz==1){
             board[i] = slnMap[i][0];
-            mvprintw(getSquareY(10)+1,getSquareX(0),"Something is true");
-
-        }else{
-            mvprintw(getSquareY(10)+1,getSquareX(0),"Nothing is true  ");
+            truth = true;
         }
     }
+    if(truth){
+        mvprintw(getSquareY(10)+1,getSquareX(0),"Something is true");
+
+    }else{
+        mvprintw(getSquareY(10)+1,getSquareX(0),"Nothing is true  ");
+    }
+
 }
 
 

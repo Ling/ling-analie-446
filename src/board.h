@@ -1,3 +1,4 @@
+/// \file board.h
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
@@ -8,6 +9,10 @@
 #include <algorithm>
 #include "cursor.h"
 
+/// The sudoku playing board.
+///
+/// The playing board manages both the state of the game and handles input and
+/// output through ncurses.
 class Board{
     public:
         Board();
@@ -18,16 +23,17 @@ class Board{
         void draw()const;
 
         void load(std::istream& in);
-        void loadFile();
         void save(std::ostream& out)const;
-        void saveFile()const;
 
+        /// Are there locked numbers on the board.
+        /// \return Status of the board, whether the numbers have been locked yet or not.
         bool locked(){return is_locked;}
 
         static int getSquareX(int x);
         static int getSquareY(int y);
 
-        enum Color {COLOR_NORMAL=1, COLOR_ROW_COL, COLOR_ERROR,
+        /// These are described as COLOR_PAIRs in the ncurses system. We assign them symbolic names.
+        enum Color {COLOR_NORMAL=1, COLOR_ROW_COL, COLOR_ERROR ,
             COLOR_ERROR_ROW_COL,COLOR_NUMBER,COLOR_ERROR_NUMBER};
     private:
         void clearBoard();
@@ -37,6 +43,10 @@ class Board{
         void lockNumbers();
         void drawNumbers()const;
         void drawHelp()const;
+
+        // These two should be private, only called by the interface.
+        void loadFile();
+        void saveFile()const;
 
         bool validate()const;
         bool validateRow(int i)const;
