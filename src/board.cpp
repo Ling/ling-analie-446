@@ -46,10 +46,9 @@ Board::~Board()
  */
 void Board::clearBoard()
 {
-    for(int i = 0; i != 9*9; ++i){
-        board[i] =0;
-        fixed[i] =0;
-    }
+    clearFixedNumbers();
+    clearBoardNumbers();
+
     grid=fillSolutionGrid();
     allValid();
     is_locked=false;
@@ -111,10 +110,11 @@ void Board::drawHelp()const
 {
     int j = getSquareY(0);
     int i = getSquareX(10)+2;
-    const size_t linesSize = 8;
+    const size_t linesSize = 9;
     const char* lines[linesSize]={
         "    Help",
-        "C - Clear board",
+        "C - Clear entire board",
+        "N - Clear entered numbers",
         "S - Save puzzle",
         "O - Open puzzle",
         "L - Lock numbers",
@@ -468,6 +468,9 @@ void Board::play()
                 break;
             case 'C':
                 clearBoard();
+                break;
+            case 'N':
+                clearBoardNumbers();
                 break;
             case 'S':
                 saveFile();

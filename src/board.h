@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <iosfwd>
+#include <algorithm>
 #include "cursor.h"
 
 class Board{
@@ -30,6 +31,8 @@ class Board{
             COLOR_ERROR_ROW_COL,COLOR_NUMBER,COLOR_ERROR_NUMBER};
     private:
         void clearBoard();
+        void clearBoardNumbers(){std::fill(board,board+9*9,0);}
+        void clearFixedNumbers(){std::fill(fixed,fixed+9*9,0);}
         void setNumber(int value);
         void lockNumbers();
         void drawNumbers()const;
