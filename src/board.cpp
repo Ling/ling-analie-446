@@ -41,16 +41,24 @@ Board::~Board()
     endwin();
 }
 
+/**
+ * Clears the grid of all numbers
+ */
 void Board::clearBoard()
 {
     for(int i = 0; i != 9*9; ++i){
         board[i] =0;
         fixed[i] =0;
     }
+    grid=fillSolutionGrid();
     allValid();
     is_locked=false;
 
 }
+
+/**
+ * Draws the grid onto the screen
+ */
 void Board::drawAll()const
 {
     int row = 0, col=0;
@@ -80,6 +88,10 @@ void Board::drawAll()const
 
 
 }
+
+/**
+ * Draws
+ */
 void Board::draw()const
 {
     drawNumbers();
@@ -109,6 +121,7 @@ void Board::drawHelp()const
         "G - Generate a random new puzzle",
         "V - solVe the current puzzle",
         "R - Redraw screen"};
+
     for(int k = 0 ; k!=linesSize; ++k)
     {
         mvprintw(j+k,i,lines[k]);
@@ -245,7 +258,7 @@ bool Board::validateSquare(int squareX, int squareY)const
 
     for(int j = 0; j!=3 ; ++j)
     {
-        int row = makeIfromSquare(squareY, j); 
+        int row = makeIfromSquare(squareY, j);
         for(int i = 0; i!=3; ++i)
         {
             int col = makeIfromSquare(squareX, i);
@@ -331,6 +344,10 @@ bool Board::validPosition(int x, int y)const
              invalidSqs[ ((x/3))+((y/3)*3) ]);
 
 }
+
+/**
+ * Inserts the text file into the fixed grid array
+ */
 void Board::load(istream& in)
 {
     if(!in)
@@ -357,15 +374,23 @@ void Board::load(istream& in)
     is_locked=true;
 
 }
+
+/**
+ * Saves the current grid to a file specified by the user
+ */
 void Board::save(ostream& out)const
 {
-    copy(fixed, fixed+9*9, ostream_iterator<int>(out)); 
+    copy(fixed, fixed+9*9, ostream_iterator<int>(out));
     out<<endl;
     ostringstream oss;
     copy(board, board+9*9, ostream_iterator<int>(oss));
     if(oss.str() != string(9*9,'0'))
         out<<oss.str()<<endl;
 }
+
+/**
+ *
+ */
 int Board::getSquareIndexFromBoardIndex(int index)const
 {
     int col = indexToX(index);
@@ -374,6 +399,11 @@ int Board::getSquareIndexFromBoardIndex(int index)const
     col /=3; row /= 3;
     return col + row*3;
 }
+
+/**
+ * Loads a text file containing a line of 81 numbers that
+ * will be inserted into the grid.
+ */
 void Board::loadFile()
 {
     char fileName[100];
@@ -393,6 +423,10 @@ void Board::loadFile()
 
     mvprintw(getSquareY(10)-1,getSquareX(0),"                                                  ");
 }
+
+/**
+ * Prompts the user to enter a file name where the puzzle will be saved.
+ */
 void Board::saveFile()const
 {
     char fileName[100];
@@ -413,6 +447,10 @@ void Board::saveFile()const
     mvprintw(getSquareY(10)-1,getSquareX(0),"                                                  ");
 
 }
+
+/**
+ * Awaits user input to start playing
+ */
 void Board::play()
 {
     drawAll();
@@ -448,7 +486,7 @@ void Board::play()
                 drawAll();
                 break;
             case 'V':
-                //generateSolution(fillSolutionGrid());
+                generateSolution(grid);
                 break;
             case KEY_LEFT:
                 cursor->moveLeft();
@@ -467,6 +505,9 @@ void Board::play()
     }
 }
 
+/**
+ *
+ */
 int Board::getSquareX(int x){
     int i = x*4 +3;
     if(x >=3)
@@ -481,14 +522,14 @@ int Board::getSquareY(int y){
 }
 
 /**
- * Generates a random number grid
+ * Generates a grid containing valid random numbers.
  */
 void Board::generateRandomGrid()
 {
     clearBoard();/*clears the grid before starting*/
 
     int rdmNum = rand() % 9 + 1; /*generates a random number from 1-9*/
-    int rdmPos = rand() % 81; /*generates a random position from 0-80*/
+    int rdmPos = rand() % 81; /*generates a random positiqon from 0-80*/
     int rdmPosNext = rand() % 81; /*generates the next random position from 0-80*/
     int rdmCount = rand() % 30+1;/*quantity of numbers generated. Ranges from 5 to 30 numbers.*/
     bool isValid = false; /*start with an invalid board*/
@@ -530,26 +571,30 @@ void Board::generateRandomGrid()
 }
 
 /**
- * Fill the solution grid
+ * Fill the solution grid where each cell is filled with
+ * a vector of 9 numbers (1-9)
  */
-
 map< int, vector<int> > Board::fillSolutionGrid()
 {
     map<int,vector<int> > slnMap;
     vector<int> cellVec;
 
-    for(int i=0; i < 80; ++i){
-        for(int j=1; j < 10; ++j){//fill each cell with an array
-            cellVec.push_back(j); //initialize
-        }
+    for(int j=0; j != 9; ++j){/*fill each cell with a vector*/
+        cellVec.push_back(j+1); /*initialize*/
+    }
 
-        slnMap.insert(pair< int,vector<int> >(i, cellVec));
+    for(int i=0; i != 81; ++i){
+        /*assign a newly filled vector in the map which represents each grid cell*/
+        slnMap[i]= cellVec;
     }
 
     return slnMap;
 }
 
-vector<int> Board::getAllIndicesInSameSquare(int K){
+/**
+ * Retrieves all the positions in the subgrid
+ */
+vector<int> Board::getAllIndicesInSameSquare(int K)const{
     int col = makeSquareFromI(indexToX(K));
     int row = makeSquareFromI(indexToY(K));
     vector<int> ret;
@@ -568,7 +613,9 @@ vector<int> Board::getAllIndicesInSameSquare(int K){
 
 
 /**
- * Solves the puzzle
+ * Solves the puzzle by iterating through each row, column and subgrid.
+ * Each cell (0-81) contains a vector of 9 elements. The current value is
+ * removed from the vector of each corresponding row, column and subgrid.
  */
 void Board::generateSolution(map<int, vector<int> >& slnMap)
 {
@@ -576,8 +623,11 @@ void Board::generateSolution(map<int, vector<int> >& slnMap)
     int row = 0;
     int col = 0;
     vector<int> cellVec;
+    unsigned int vecSizeBefore;
+    unsigned int vecSizeAfter;
 
-    for(int i = 0; i < 80; ++i){
+
+    for(int i = 0; i != 81; ++i){
         if((fixed[i] != 0 || board[i] != 0)){
             if(fixed[i] != 0){
                 value = fixed[i];
@@ -589,29 +639,68 @@ void Board::generateSolution(map<int, vector<int> >& slnMap)
             col = indexToY(i);
 
             /*get the vector from slnMap*/
-            for(int c = 0; c < 9; ++c){
-                //for (map<int,vector<int> >::iterator iter = slnMap.begin(); iter != slnMap.end(); ++iter ) {
-                cellVec = slnMap[makeIndex(row, c)]; /*assign the vector from the cell*/
-                cellVec[value-1] = 1; /*set value to 1 to show that it is used*/
-                slnMap[makeIndex(row, c)] = cellVec; /*reassign the updated vector to the map*/
+            for(int c = 0; c != 9; ++c){
+                int index = makeIndex(row, c);
+                cellVec = slnMap[index]; /*assign the vector from the cell*/
+                vecSizeBefore = cellVec.size();
+                for (unsigned int z = 0; z != cellVec.size(); ++z){
+                    if(cellVec[z] == value){
+                        cellVec.erase(cellVec.begin()+z);
+                        break;
+                    }
+                }
+                //cellVec.erase(cellVec.begin() + value-1);
+                //remove(cellVec.begin(), cellVec.end(),value); /*remove the number from the vector*/
+                vecSizeAfter = cellVec.size();
+                slnMap[index] = cellVec; /*reassign the updated vector to the map*/
             }
 
             /*get the vector from slnMap*/
             for(int r = 0; r < 9; ++r){
-                //for (map<int,vector<int> >::iterator iter = slnMap.begin(); iter != slnMap.end(); ++iter ) {
                 cellVec = slnMap[makeIndex(r, col)]; /*assign the vector from the cell*/
-                cellVec[value-1] = 1; /*set value to 1 to show that it is used*/
-                slnMap[makeIndex(r, col)] = cellVec; /*reassign the updated vector to the map*/
-            }
-
-            for(int rr = 0; rr!=3 ; ++rr){
-                int pos = makeIfromSquare(row, col);
-                for(int i = 0; i!=3; ++i){
-
-
+                vecSizeBefore = cellVec.size();
+                for (unsigned int z = 0; z != vecSizeBefore; ++z){
+                    if(cellVec[z] == value){
+                        cellVec.erase(cellVec.begin()+z);
+                        break;
+                    }
                 }
+                //remove(cellVec.begin(), cellVec.end(), value); /*remove the number from the vector*/
+                vecSizeAfter = cellVec.size();
+                slnMap[makeIndex(r, col)] = cellVec; /*reassign the updated vector to the map*/
+
             }
-            }
+
+            vector<int> square = getAllIndicesInSameSquare(i);
+
+            for(vector<int>::const_iterator it = square.begin(); it!=square.end();++it)
+            {
+                cellVec = slnMap[*it]; /*assign the vector from the cell*/
+                vecSizeBefore = cellVec.size();
+                for (unsigned int z = 0; z != vecSizeBefore; ++z){
+                    if(cellVec[z] == value){
+                        cellVec.erase(cellVec.begin()+z);
+                        break;
+                    }
+                }
+                //remove(cellVec.begin(), cellVec.end(), value); /*remove the number from the vector*/
+                vecSizeAfter = cellVec.size();
+                slnMap[*it] = cellVec; /*reassign the updated vector to the map*/
+                cellVec.clear();
             }
         }
+    }
+
+    for(int i = 0; i != 81; ++i){
+        int sz = slnMap[i].size();/*size of the remaining vector*/
+        if(sz==1){
+            board[i] = slnMap[i][0];
+            mvprintw(getSquareY(10)+1,getSquareX(0),"Something is true");
+
+        }else{
+            mvprintw(getSquareY(10)+1,getSquareX(0),"Nothing is true  ");
+        }
+    }
+}
+
 
