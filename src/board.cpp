@@ -320,6 +320,7 @@ void Board::load(istream& in)
         }
     }
     std::copy(buffer, buffer+9*9, fixed);
+    is_locked=true;
 
 }
 void Board::save(ostream& out)const

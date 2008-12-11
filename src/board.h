@@ -61,8 +61,8 @@ class Board{
         int indexToX(int i)const {return i%9;}
         int indexToY(int i)const {return i/9;}
         int makeIfromSquare(int squareX, int cellX)const{return cellX+squareX*3;}
-        //int makeSquareFromI(int i)const{return i/3;}
-        //int makeCellFromI(int i)const{return i%3;}
+        int makeSquareFromI(int i)const{return i/3;}
+        int makeCellFromI(int i)const{return i%3;}
 
         //Constants
         const static std::string LINE_THIN, LINE_THICK;
