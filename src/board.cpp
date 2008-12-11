@@ -71,7 +71,9 @@ void Board::drawAll()const
         mvprintw( row + 2 + 2*i, col+2, "|   |   |   ||   |   |   ||   |   |   |" );
     }
 
+    drawHelp();
     draw();
+
 
 }
 void Board::draw()const
@@ -88,6 +90,24 @@ void Board::draw()const
         attron( COLOR_PAIR( COLOR_NORMAL ) );
     }
 }
+
+void Board::drawHelp()const
+{
+	int j = getSquareY(0);
+	int i = getSquareX(10)+2;
+	const char* lines[6]={
+	"    Help",
+	"C - Clear board",
+	"S - Save puzzle",
+	"O - Open puzzle",
+	"L - Lock numbers",
+	"R - Redraw screen"};
+	for(int k = 0 ; k!=6; ++k)
+	{
+		mvprintw(j+k,i,lines[k]);
+	}
+}
+
 void Board::setNumber(int value)
 {
     int number = value - '0'; //We want the character '0' to be of value 0.
@@ -321,13 +341,42 @@ int Board::getSquareIndexFromBoardIndex(int index)const
 }
 void Board::loadFile()
 {
-    ifstream ifs("levels/level1.sud");
+    char fileName[100];
+
+    mvprintw(getSquareY(10)-1,getSquareX(0),"                                                  ");
+    mvprintw(getSquareY(10)-1,getSquareX(0),"File to open: ");
+    echo();
+    getstr(fileName);
+    noecho();
+    ifstream ifs(fileName);
+    if(!ifs)
+    {
+         mvprintw(getSquareY(10)-1,getSquareX(0),"Couldn't read %s.", fileName);
+         return;
+    }
     load(ifs);
+
+    mvprintw(getSquareY(10)-1,getSquareX(0),"                                                  ");
 }
 void Board::saveFile()const
 {
-    ofstream ofs("/tmp/sudoku.save", ios_base::out | ios_base::trunc);
+    char fileName[100];
+
+    mvprintw(getSquareY(10)-1,getSquareX(0),"                                                  ");
+    mvprintw(getSquareY(10)-1,getSquareX(0),"File to save: ");
+    echo();
+    getstr(fileName);
+    noecho();
+    ofstream ofs(fileName, ios_base::out | ios_base::trunc);
+    if(!ofs)
+    {
+         mvprintw(getSquareY(10)-1,getSquareX(0),"Couldn't write %s.", fileName);
+         return;
+    }
     save(ofs);
+
+    mvprintw(getSquareY(10)-1,getSquareX(0),"                                                  ");
+
 }
 void Board::play()
 {
@@ -350,7 +399,7 @@ void Board::play()
             case 'S':
                 saveFile();
                 break;
-            case 'X':
+            case 'O':
                 loadFile();
                 break;
             case 'L':

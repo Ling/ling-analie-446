@@ -14,7 +14,6 @@ class Board{
         void play();
         void drawAll()const;
         void draw()const;
-        void drawNumbers()const;
 
         void load(std::istream& in);
         void loadFile();
@@ -32,6 +31,8 @@ class Board{
         void clearBoard();
         void setNumber(int value);
         void lockNumbers();
+        void drawNumbers()const;
+        void drawHelp()const;
 
         bool validate()const;
         bool validateRow(int i)const;
