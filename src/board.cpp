@@ -2,6 +2,10 @@
 #include <curses.h>
 #include <string>
 #include <sstream>
+#include <fstream>
+#include <iostream>
+#include <iterator>
+#include <algorithm>
 
 using namespace std;
 const string Board::LINE_THIN="+---+---+---++---+---+---++---+---+---+";
@@ -273,6 +277,40 @@ bool Board::validPosition(int x, int y)const
              invalidSqs[ ((x/3))+((y/3)*3) ]);
 
 }
+void Board::load(istream& in)
+{
+    if(!in)
+        return;
+
+    string line;
+    getline(in, line);
+    istringstream iss(line);
+    char c;
+    int buffer[9*9];
+    int i = 0;
+    while(i!=9*9)
+    {
+        iss >> c;
+        if(!iss) return;
+        int n = c-'0';
+        if(n >=0 && n  <=9)
+        {
+            buffer[i]=n;
+            ++i;
+        }
+    }
+    std::copy(buffer, buffer+9*9, fixed);
+
+}
+void Board::save(ostream& out)const
+{
+   copy(fixed, fixed+9*9, ostream_iterator<int>(out)); 
+   out<<endl;
+   ostringstream oss;
+   copy(board, board+9*9, ostream_iterator<int>(oss));
+   if(oss.str() != string(9*9,'0'))
+    out<<oss.str()<<endl;
+}
 int Board::getSquareIndexFromBoardIndex(int index)const
 {
     int col = indexToX(index);
@@ -280,6 +318,16 @@ int Board::getSquareIndexFromBoardIndex(int index)const
 
     col /=3; row /= 3;
     return col + row*3;
+}
+void Board::loadFile()
+{
+    ifstream ifs("levels/level1.sud");
+    load(ifs);
+}
+void Board::saveFile()const
+{
+    ofstream ofs("/tmp/sudoku.save", ios_base::out | ios_base::trunc);
+    save(ofs);
 }
 void Board::play()
 {
@@ -298,6 +346,12 @@ void Board::play()
                 break;
             case 'C':
                 clearBoard();
+                break;
+            case 'S':
+                saveFile();
+                break;
+            case 'X':
+                loadFile();
                 break;
             case 'L':
                 lockNumbers();

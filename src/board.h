@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <iosfwd>
 #include "cursor.h"
 
 class Board{
@@ -14,6 +15,11 @@ class Board{
         void drawAll()const;
         void draw()const;
         void drawNumbers()const;
+
+        void load(std::istream& in);
+        void loadFile();
+        void save(std::ostream& out)const;
+        void saveFile()const;
 
         bool locked(){return is_locked;}
 
