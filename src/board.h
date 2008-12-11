@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <iosfwd>
 #include "cursor.h"
 
@@ -39,6 +40,9 @@ class Board{
         bool validateCol(int i)const;
         bool validateSquare(int squareX, int squareY)const;
 
+	void generateRandomGrid();
+	void generateSolution(std::map<int, std::vector<int> >& slnMap);
+	std::map< int, std::vector<int> > fillSolutionGrid();
         int valueAt(int index)const;
 
         int board[81];

@@ -2,6 +2,8 @@
 #include <curses.h>
 #include <string>
 #include <sstream>
+#include <map>
+#include <vector>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -29,6 +31,8 @@ Board::Board():cursor(new Cursor())
     init_pair( COLOR_ERROR_NUMBER, COLOR_GREEN, COLOR_RED );
 
     clearBoard();
+
+    srand ( time(NULL) );/*initialize random seed*/
 
 }
 Board::~Board()
@@ -95,14 +99,17 @@ void Board::drawHelp()const
 {
 	int j = getSquareY(0);
 	int i = getSquareX(10)+2;
-	const char* lines[6]={
+	const size_t linesSize = 8;
+	const char* lines[linesSize]={
 	"    Help",
 	"C - Clear board",
 	"S - Save puzzle",
 	"O - Open puzzle",
 	"L - Lock numbers",
+	"G - Generate a random new puzzle",
+	"V - solVe the current puzzle",
 	"R - Redraw screen"};
-	for(int k = 0 ; k!=6; ++k)
+	for(int k = 0 ; k!=linesSize; ++k)
 	{
 		mvprintw(j+k,i,lines[k]);
 	}
@@ -134,6 +141,9 @@ void Board::lockNumbers()
     is_locked=true;
 }
 
+/**
+* Initializes the 'invalid' arrays to valid
+*/
 void Board::allValid()const
 {
     for(int i = 0; i!=9; ++i)
@@ -142,9 +152,16 @@ void Board::allValid()const
     }
 }
 
+/**
+* Validation of the grid.
+* Returns false is there is 2 or more same numbers in a row, column or subgrid
+*/
 bool Board::validate()const
 {
     allValid();
+
+    /*Validates the rows and the columns*/
+    /*Stores the invalid coordinates*/
     for(int i = 0; i != 9; ++i)
     {
         if(!validateRow(i))
@@ -152,38 +169,49 @@ bool Board::validate()const
         if(!validateCol(i))
             invalidCols[i]=true;
     }
+
+    /*Validates the subgrid*/
     for(int i = 0; i!=3; ++i)
         for(int j = 0; j!=3; ++j)
             if(!validateSquare(i,j))
                invalidSqs[i+j*3]=true;
-    
-    for(int i = 0; i!=9;++i)
+
+    /*If just one number is invalid, the grid is invalid*/
+    for(int i = 0; i!=9; ++i)
         if(invalidRows[i]||invalidCols[i]||invalidSqs[i])
             return false;
     return true;
 }
 
+/**
+* Validates a row
+* Parameter: i-> row to be checked
+*/
 bool Board::validateRow(int i)const
 {
-    bool used[9];
-    for(int a = 0; a!=9; ++a)used[a]=false;
+    bool used[9];/*keeps count of the number of times a number is used*/
+    for(int a = 0; a!=9; ++a)used[a]=false;/*initialize*/
 
     for(int c = 0; c!=9 ; ++c)
     {
-        int index = c+9*i; //find the correct position in the array.
+        int index = c+9*i; /*find the correct position in the array.*/
 
         int value = (fixed[index])? fixed[index] : board[index];
         if(!value)
             continue;
-        value--; //we have valued 1..9 but indices 0..8.
+        value--; /*we have valued 1..9 but indices 0..8.*/
 
         if(used[value])
             return false;
         used[value]=true;
     }
-    return true; //If we get here we didn't return false in the loop so ok.
+    return true; /*If we get here we didn't return false in the loop so ok.*/
 }
-/** I am a comment to be replaced */
+
+/**
+ * Validates a column
+ * Parameter: i-> column to be checked
+ */
 bool Board::validateCol(int i)const
 {
     bool used[9];
@@ -204,6 +232,12 @@ bool Board::validateCol(int i)const
     }
     return true; //If we get here we didn't return false in the loop so ok.
 }
+
+/**
+ * Validates a subgrid
+ * Parameters:  squareX -> x coordinate
+ *              squareY -> y coordinate
+ */
 bool Board::validateSquare(int squareX, int squareY)const
 {
     bool used[9];
@@ -409,6 +443,13 @@ void Board::play()
             case 'R':
                 drawAll();
                 break;
+            case 'G':
+                generateRandomGrid();
+                drawAll();
+                break;
+            case 'V':
+                //generateSolution(fillSolutionGrid());
+                break;
             case KEY_LEFT:
                 cursor->moveLeft();
                 break;
@@ -434,6 +475,141 @@ int Board::getSquareX(int x){
         i++;
     return i;
 }
+
 int Board::getSquareY(int y){
     return 2*y +2;
 }
+
+/**
+* Generates a random number grid
+*/
+void Board::generateRandomGrid()
+{
+    clearBoard();/*clears the grid before starting*/
+
+    int rdmNum = rand() % 9 + 1; /*generates a random number from 1-9*/
+    int rdmPos = rand() % 81; /*generates a random position from 0-80*/
+    int rdmPosNext = rand() % 81; /*generates the next random position from 0-80*/
+    int rdmCount = rand() % 30+1;/*quantity of numbers generated. Ranges from 5 to 30 numbers.*/
+    bool isValid = false; /*start with an invalid board*/
+
+    while (rdmCount < 5 ){ /*makes sure there are at least 5 random numbers generated*/
+        rdmCount = rand() % 30+1;/*TODO: make the maximum number variable depending on the difficulty level*/
+    }
+
+    for ( int i=0;i<81;++i )
+        fixed[i] = 0;/*reset the elements of fixed array to 0*/
+
+    for(int i = 0; i < rdmCount; ++i){
+        fixed[rdmPos] = rdmNum;/*assign the number to the fixed array*/
+        board[rdmPos] = rdmNum; /*insert into the board to check if it's valid*/
+
+        isValid = validate();
+
+        while (!isValid) {/*validate*/
+            fixed[rdmPos] = 0;/*if the number is invalid reset the board position to 0*/
+            board[rdmPos] = 0;/*if the number is invalid reset the fixed position to 0*/
+
+            /*keep generating a new number until a valid one comes up*/
+            rdmNum = rand() % 9 + 1; /*generates a random number from 1-9*/
+            fixed[rdmPos] = rdmNum;/*assign the number to the fixed array*/
+            board[rdmPos] = rdmNum; /*insert into the board to check if it's valid*/
+            isValid = validate();/*validate*/
+        }
+
+        /*generates a new position*/
+        /*can't be the same as the current one*/
+        while(rdmPos == rdmPosNext){
+            rdmPosNext = rand() % 81;
+        }
+
+        rdmPos = rdmPosNext; /*assign the next position to the current one*/
+        rdmNum = rand() % 9 + 1; /*generate a new number*/
+        rdmPosNext = rand() % 81; /*generate the next new position*/
+    }
+}
+
+/**
+* Fill the solution grid
+*/
+
+map< int, vector<int> > Board::fillSolutionGrid()
+{
+    map<int,vector<int> > slnMap;
+    vector<int> cellVec;
+
+    for(int i=0; i < 80; ++i){
+        for(int j=1; j < 10; ++j){//fill each cell with an array
+            cellVec.push_back(j); //initialize
+        }
+
+        slnMap.insert(pair< int,vector<int> >(i, cellVec));
+    }
+
+    return slnMap;
+}
+
+vector<int> getAllIndicesInSameSquare(int K){
+    int col = makeSquareFromI(makeIndexToX(K));
+    int row = makeSquareFromI(makeIndexToY(K));
+    vector<int> ret;
+    for(int j = 0; j!=3;++j)
+        int somer = makeIfromSquare(row,j);
+        for(int i = 0;i!=3;++i)
+        {
+            int somec makeIfromSquare(col,i)
+            int index  = makeIndex(somec,somec);
+            ret.push_back(index);
+        }
+    return ret;
+}
+
+
+/**
+* Solves the puzzle
+*/
+void Board::generateSolution(map<int, vector<int> >& slnMap)
+{
+    int value = 0;
+    int row = 0;
+    int col = 0;
+    vector<int> cellVec;
+
+    for(int i = 0; i < 80; ++i){
+        if((fixed[i] != 0 || board[i] != 0)){
+            if(fixed[i] != 0){
+                value = fixed[i];
+            }else if(board[i] != 0){
+                value = board[i];
+            }
+
+            row = indexToX(i);
+            col = indexToY(i);
+
+            /*get the vector from slnMap*/
+            for(int c = 0; c < 9; ++c){
+            //for (map<int,vector<int> >::iterator iter = slnMap.begin(); iter != slnMap.end(); ++iter ) {
+                cellVec = slnMap[makeIndex(row, c)]; /*assign the vector from the cell*/
+                cellVec[value-1] = 1; /*set value to 1 to show that it is used*/
+                slnMap[makeIndex(row, c)] = cellVec; /*reassign the updated vector to the map*/
+            }
+
+            /*get the vector from slnMap*/
+            for(int r = 0; r < 9; ++r){
+            //for (map<int,vector<int> >::iterator iter = slnMap.begin(); iter != slnMap.end(); ++iter ) {
+                cellVec = slnMap[makeIndex(r, col)]; /*assign the vector from the cell*/
+                cellVec[value-1] = 1; /*set value to 1 to show that it is used*/
+                slnMap[makeIndex(r, col)] = cellVec; /*reassign the updated vector to the map*/
+            }
+
+            for(int rr = 0; rr!=3 ; ++rr){
+                int pos = makeIfromSquare(row, col);
+                for(int i = 0; i!=3; ++i){
+
+
+                }
+            }
+        }
+    }
+}
+
