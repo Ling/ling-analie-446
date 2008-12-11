@@ -97,22 +97,22 @@ void Board::draw()const
 
 void Board::drawHelp()const
 {
-	int j = getSquareY(0);
-	int i = getSquareX(10)+2;
-	const size_t linesSize = 8;
-	const char* lines[linesSize]={
-	"    Help",
-	"C - Clear board",
-	"S - Save puzzle",
-	"O - Open puzzle",
-	"L - Lock numbers",
-	"G - Generate a random new puzzle",
-	"V - solVe the current puzzle",
-	"R - Redraw screen"};
-	for(int k = 0 ; k!=linesSize; ++k)
-	{
-		mvprintw(j+k,i,lines[k]);
-	}
+    int j = getSquareY(0);
+    int i = getSquareX(10)+2;
+    const size_t linesSize = 8;
+    const char* lines[linesSize]={
+        "    Help",
+        "C - Clear board",
+        "S - Save puzzle",
+        "O - Open puzzle",
+        "L - Lock numbers",
+        "G - Generate a random new puzzle",
+        "V - solVe the current puzzle",
+        "R - Redraw screen"};
+    for(int k = 0 ; k!=linesSize; ++k)
+    {
+        mvprintw(j+k,i,lines[k]);
+    }
 }
 
 void Board::setNumber(int value)
@@ -142,8 +142,8 @@ void Board::lockNumbers()
 }
 
 /**
-* Initializes the 'invalid' arrays to valid
-*/
+ * Initializes the 'invalid' arrays to valid
+ */
 void Board::allValid()const
 {
     for(int i = 0; i!=9; ++i)
@@ -153,9 +153,9 @@ void Board::allValid()const
 }
 
 /**
-* Validation of the grid.
-* Returns false is there is 2 or more same numbers in a row, column or subgrid
-*/
+ * Validation of the grid.
+ * Returns false is there is 2 or more same numbers in a row, column or subgrid
+ */
 bool Board::validate()const
 {
     allValid();
@@ -174,7 +174,7 @@ bool Board::validate()const
     for(int i = 0; i!=3; ++i)
         for(int j = 0; j!=3; ++j)
             if(!validateSquare(i,j))
-               invalidSqs[i+j*3]=true;
+                invalidSqs[i+j*3]=true;
 
     /*If just one number is invalid, the grid is invalid*/
     for(int i = 0; i!=9; ++i)
@@ -184,9 +184,9 @@ bool Board::validate()const
 }
 
 /**
-* Validates a row
-* Parameter: i-> row to be checked
-*/
+ * Validates a row
+ * Parameter: i-> row to be checked
+ */
 bool Board::validateRow(int i)const
 {
     bool used[9];/*keeps count of the number of times a number is used*/
@@ -242,7 +242,7 @@ bool Board::validateSquare(int squareX, int squareY)const
 {
     bool used[9];
     for(int a = 0; a!=9; ++a)used[a]=false;
-    
+
     for(int j = 0; j!=3 ; ++j)
     {
         int row = makeIfromSquare(squareY, j); 
@@ -251,7 +251,7 @@ bool Board::validateSquare(int squareX, int squareY)const
             int col = makeIfromSquare(squareX, i);
             int index = makeIndex(col,row);
             int value = valueAt(index);
-            
+
             if(!value)
                 continue;
             value--;
@@ -274,27 +274,27 @@ int Board::valueAt(int index)const
 
 void Board::drawNumbers()const
 {
-//    We were testing our calculate methods.
-//    for(int i = 0 ; i != 3; ++i)
-//        for(int j=0 ; j!=3; ++j)
-//            for(int x=0 ; x!=3; ++x)
-//                for(int y=0 ; y!=3; ++y)
-//                {
-//                    int col = makeIfromSquare(i,x);
-//                    int row = makeIfromSquare(j,y);
-//
-//
-//                    int number = 1+x+3*y;
-//                    ostringstream oss;
-//                    if(number)
-//                        oss<<number;
-//                    else
-//                        oss<<" ";
-//
-//                    attron( COLOR_PAIR( COLOR_NUMBER ) );
-//                    mvprintw( getSquareY(row), Board::getSquareX(col)+1, oss.str().c_str());
-//                    attron( COLOR_PAIR( COLOR_NORMAL ) );
-//                }
+    //    We were testing our calculate methods.
+    //    for(int i = 0 ; i != 3; ++i)
+    //        for(int j=0 ; j!=3; ++j)
+    //            for(int x=0 ; x!=3; ++x)
+    //                for(int y=0 ; y!=3; ++y)
+    //                {
+    //                    int col = makeIfromSquare(i,x);
+    //                    int row = makeIfromSquare(j,y);
+    //
+    //
+    //                    int number = 1+x+3*y;
+    //                    ostringstream oss;
+    //                    if(number)
+    //                        oss<<number;
+    //                    else
+    //                        oss<<" ";
+    //
+    //                    attron( COLOR_PAIR( COLOR_NUMBER ) );
+    //                    mvprintw( getSquareY(row), Board::getSquareX(col)+1, oss.str().c_str());
+    //                    attron( COLOR_PAIR( COLOR_NORMAL ) );
+    //                }
     for(int i = 0 ; i != 9; ++i)
         for(int j=0 ; j!=9; ++j)
         {
@@ -305,13 +305,13 @@ void Board::drawNumbers()const
                 given = false;
                 number = board[i+9*j];
             }
-            
+
             ostringstream oss;
             if(number)
                 oss<<number;
             else
                 oss<<" ";
-            
+
             if(validPosition(i,j))
                 attron( COLOR_PAIR( ((given)?COLOR_NUMBER:COLOR_NORMAL) ) );
             else
@@ -359,12 +359,12 @@ void Board::load(istream& in)
 }
 void Board::save(ostream& out)const
 {
-   copy(fixed, fixed+9*9, ostream_iterator<int>(out)); 
-   out<<endl;
-   ostringstream oss;
-   copy(board, board+9*9, ostream_iterator<int>(oss));
-   if(oss.str() != string(9*9,'0'))
-    out<<oss.str()<<endl;
+    copy(fixed, fixed+9*9, ostream_iterator<int>(out)); 
+    out<<endl;
+    ostringstream oss;
+    copy(board, board+9*9, ostream_iterator<int>(oss));
+    if(oss.str() != string(9*9,'0'))
+        out<<oss.str()<<endl;
 }
 int Board::getSquareIndexFromBoardIndex(int index)const
 {
@@ -386,8 +386,8 @@ void Board::loadFile()
     ifstream ifs(fileName);
     if(!ifs)
     {
-         mvprintw(getSquareY(10)-1,getSquareX(0),"Couldn't read %s.", fileName);
-         return;
+        mvprintw(getSquareY(10)-1,getSquareX(0),"Couldn't read %s.", fileName);
+        return;
     }
     load(ifs);
 
@@ -405,8 +405,8 @@ void Board::saveFile()const
     ofstream ofs(fileName, ios_base::out | ios_base::trunc);
     if(!ofs)
     {
-         mvprintw(getSquareY(10)-1,getSquareX(0),"Couldn't write %s.", fileName);
-         return;
+        mvprintw(getSquareY(10)-1,getSquareX(0),"Couldn't write %s.", fileName);
+        return;
     }
     save(ofs);
 
@@ -481,8 +481,8 @@ int Board::getSquareY(int y){
 }
 
 /**
-* Generates a random number grid
-*/
+ * Generates a random number grid
+ */
 void Board::generateRandomGrid()
 {
     clearBoard();/*clears the grid before starting*/
@@ -530,8 +530,8 @@ void Board::generateRandomGrid()
 }
 
 /**
-* Fill the solution grid
-*/
+ * Fill the solution grid
+ */
 
 map< int, vector<int> > Board::fillSolutionGrid()
 {
@@ -549,25 +549,27 @@ map< int, vector<int> > Board::fillSolutionGrid()
     return slnMap;
 }
 
-vector<int> getAllIndicesInSameSquare(int K){
-    int col = makeSquareFromI(makeIndexToX(K));
-    int row = makeSquareFromI(makeIndexToY(K));
+vector<int> Board::getAllIndicesInSameSquare(int K){
+    int col = makeSquareFromI(indexToX(K));
+    int row = makeSquareFromI(indexToY(K));
     vector<int> ret;
     for(int j = 0; j!=3;++j)
-        int somer = makeIfromSquare(row,j);
+    {
+        int some_row = makeIfromSquare(row,j);
         for(int i = 0;i!=3;++i)
         {
-            int somec makeIfromSquare(col,i)
-            int index  = makeIndex(somec,somec);
+            int some_col = makeIfromSquare(col,i);
+            int index = makeIndex(some_col,some_row);
             ret.push_back(index);
         }
+    }
     return ret;
 }
 
 
 /**
-* Solves the puzzle
-*/
+ * Solves the puzzle
+ */
 void Board::generateSolution(map<int, vector<int> >& slnMap)
 {
     int value = 0;
@@ -588,7 +590,7 @@ void Board::generateSolution(map<int, vector<int> >& slnMap)
 
             /*get the vector from slnMap*/
             for(int c = 0; c < 9; ++c){
-            //for (map<int,vector<int> >::iterator iter = slnMap.begin(); iter != slnMap.end(); ++iter ) {
+                //for (map<int,vector<int> >::iterator iter = slnMap.begin(); iter != slnMap.end(); ++iter ) {
                 cellVec = slnMap[makeIndex(row, c)]; /*assign the vector from the cell*/
                 cellVec[value-1] = 1; /*set value to 1 to show that it is used*/
                 slnMap[makeIndex(row, c)] = cellVec; /*reassign the updated vector to the map*/
@@ -596,7 +598,7 @@ void Board::generateSolution(map<int, vector<int> >& slnMap)
 
             /*get the vector from slnMap*/
             for(int r = 0; r < 9; ++r){
-            //for (map<int,vector<int> >::iterator iter = slnMap.begin(); iter != slnMap.end(); ++iter ) {
+                //for (map<int,vector<int> >::iterator iter = slnMap.begin(); iter != slnMap.end(); ++iter ) {
                 cellVec = slnMap[makeIndex(r, col)]; /*assign the vector from the cell*/
                 cellVec[value-1] = 1; /*set value to 1 to show that it is used*/
                 slnMap[makeIndex(r, col)] = cellVec; /*reassign the updated vector to the map*/
@@ -609,7 +611,7 @@ void Board::generateSolution(map<int, vector<int> >& slnMap)
 
                 }
             }
+            }
+            }
         }
-    }
-}
 

@@ -40,9 +40,10 @@ class Board{
         bool validateCol(int i)const;
         bool validateSquare(int squareX, int squareY)const;
 
-	void generateRandomGrid();
-	void generateSolution(std::map<int, std::vector<int> >& slnMap);
-	std::map< int, std::vector<int> > fillSolutionGrid();
+        void generateRandomGrid();
+        void generateSolution(std::map<int, std::vector<int> >& slnMap);
+        std::map< int, std::vector<int> > fillSolutionGrid();
+        std::vector<int> getAllIndicesInSameSquare(int K);
         int valueAt(int index)const;
 
         int board[81];
