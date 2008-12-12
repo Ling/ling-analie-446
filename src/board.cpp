@@ -123,9 +123,10 @@ void Board::drawHelp()const
 {
     int j = getSquareY(0);
     int i = getSquareX(10)+2;
-    const size_t linesSize = 9;
+    const size_t linesSize = 13;
     const char* lines[linesSize]={
         "    Help",
+        "q - Quit",
         "C - Clear entire board",
         "N - Clear entered numbers",
         "S - Save puzzle",
@@ -133,7 +134,11 @@ void Board::drawHelp()const
         "L - Lock numbers",
         "G - Generate a random new puzzle",
         "H - Hint",
-        "R - Redraw screen"};
+        "R - Redraw screen",
+        "",
+        "1-9  - Set to number",
+        "0    - Clear the number"
+    };
 
     for(int k = 0 ; k!=linesSize; ++k)
     {
@@ -478,6 +483,8 @@ void Board::play()
             case '5': case '6': case '7': case '8': case '9':
                 setNumber(ch);
                 break;
+            case ' ':
+                setNumber('0');
             case 'C':
                 clearBoard();
                 break;
