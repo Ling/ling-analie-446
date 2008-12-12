@@ -10,7 +10,9 @@ class Cursor{
         void moveLeft();
         void draw()const;
 
+        /**Get the current sudoku column of the cursor.  \return The column position */
         int getX()const{return x;}
+        /**Get the current sudoku row of the cursor.  \return The row position */
         int getY()const{return y;}
 
     private:
