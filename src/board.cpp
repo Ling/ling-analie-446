@@ -485,6 +485,7 @@ void Board::play()
                 break;
             case ' ':
                 setNumber('0');
+                break;
             case 'C':
                 clearBoard();
                 break;
