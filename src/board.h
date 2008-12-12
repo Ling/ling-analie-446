@@ -29,15 +29,27 @@ class Board{
         /// \return Status of the board, whether the numbers have been locked yet or not.
         bool locked(){return is_locked;}
 
+        /** Get the screen column of a well.  \param x The square's board column.  \return The leftmost screen column of square x. */
         static int getSquareX(int x);
+        /** Get the screen row of a well.  \param y The square's board row.  \return The leftmost screen row of square x. */
         static int getSquareY(int y);
 
-        /// These are described as COLOR_PAIRs in the ncurses system. We assign them symbolic names.
-        enum Color {COLOR_NORMAL=1, COLOR_ROW_COL, COLOR_ERROR ,
-            COLOR_ERROR_ROW_COL,COLOR_NUMBER,COLOR_ERROR_NUMBER};
+        /** These are described as COLOR_PAIRs in the ncurses system.  
+         *
+         * We assign them symbolic names.
+         */
+        enum Color {COLOR_NORMAL=1,/**<Normal text*/ 
+            COLOR_ROW_COL,/**<\deprecated Higlight row and column containing the cursor.*/
+            COLOR_ERROR, /**<Highlight cell part of a row, column, or square containing an error.*/
+            COLOR_ERROR_ROW_COL,/**<\deprecated Highlight of rows and columns containing the cursor and errors.*/
+            COLOR_NUMBER,/**<Given numbers.*/
+            COLOR_ERROR_NUMBER/**<Given numbers part of a row, column, or square containing an error.*/
+        };
     private:
         void clearBoard();
+        /**Reset the player numbers to blank.*/
         void clearBoardNumbers(){std::fill(board,board+9*9,0);}
+        /**Reset the given numbers to blank.*/
         void clearFixedNumbers(){std::fill(fixed,fixed+9*9,0);}
         void setNumber(int value);
         void lockNumbers();
@@ -59,7 +71,9 @@ class Board{
         std::vector<int> getAllIndicesInSameSquare(int K)const;
         int valueAt(int index)const;
 
+        /** The player entered numbers.*/
         int board[81];
+        /** The numbers given in the puzzle.  These number may not be changed. */
         int fixed[81];
 
         std::map< int, std::vector<int> > grid;
@@ -77,6 +91,15 @@ class Board{
 
         //X means cols
         //Y means rows
+        /**
+         * Utility function.
+         *
+         * Translate from 2 dimensional cell co-ordinates to one dimensional array co-ordinates.
+         *
+         * \param x The column of the cell
+         * \param y The row of the cell
+         * \return The index to the cell in the board arrays and friends.
+         */
         int makeIndex(int x, int y)const {return x+y*9;}
         int indexToX(int i)const {return i%9;}
         int indexToY(int i)const {return i/9;}

@@ -52,6 +52,8 @@ Board::~Board()
 
 /**
  * Clears the grid of all numbers.
+ *
+ * Reset the game back to the state it is when the program is started.
  */
 void Board::clearBoard()
 {
@@ -102,7 +104,9 @@ void Board::drawAll()const
 
 /**
  * Draws.
- * Draw will print out the status of the board, the cursor, and the numbers in the board.
+ *
+ * Draw will print out the status of the board, the cursor, and the numbers in
+ * the board.
  */
 void Board::draw()const
 {
@@ -119,6 +123,11 @@ void Board::draw()const
     }
 }
 
+/**
+ * Display a help pane for the user.
+ *
+ * Displays the various command that can be used.
+ */
 void Board::drawHelp()const
 {
     int j = getSquareY(0);
@@ -146,6 +155,13 @@ void Board::drawHelp()const
     }
 }
 
+/**
+ * Set the value at the cursor position.
+ *
+ * \pre The \e value given is in the range [0-9].
+ *
+ * \param value The number to be set. If \e value is 0, the number is cleared.
+ */
 void Board::setNumber(int value)
 {
     int number = value - '0'; //We want the character '0' to be of value 0.
@@ -157,6 +173,18 @@ void Board::setNumber(int value)
     validate();
 }
 
+/**
+ * Make all the numbers entered into given numbers.
+ *
+ * The numbers contained in the board will be locked into the given puzzle.
+ * This gives the player the chance to manually enter his puzzle before
+ * playing.
+ *
+ * \pre The board is not empty.
+ * \pre The board is in a valid state.
+ * \pre The board has not been locked since it was cleared.
+ * \post All the numbers are not part of the fixed given numbers of a puzzle.
+ */
 void Board::lockNumbers()
 {
     //Let's not lock if the player can't input a CORRECT puzzle.
@@ -187,6 +215,7 @@ void Board::allValid()const
 
 /**
  * Validation of the grid.
+ *
  * Returns false is there is 2 or more same numbers in a row, column or subgrid
  */
 bool Board::validate()const
@@ -217,8 +246,10 @@ bool Board::validate()const
 }
 
 /**
- * Validates a row
- * Parameter: i-> row to be checked
+ * Validate a row.
+ *
+ * Check that there are no duplicates in the row.
+ * \param i The row to be checked.
  */
 bool Board::validateRow(int i)const
 {
@@ -243,7 +274,9 @@ bool Board::validateRow(int i)const
 
 /**
  * Validates a column
- * Parameter: i-> column to be checked
+ *
+ * Check that there are no duplicates in a column.
+ * \param i The column to be checked.
  */
 bool Board::validateCol(int i)const
 {
@@ -267,9 +300,12 @@ bool Board::validateCol(int i)const
 }
 
 /**
- * Validates a subgrid
- * Parameters:  squareX -> x coordinate
- *              squareY -> y coordinate
+ * Validates a subgrid.
+ *
+ * Check that the square contains no duplicates.  This square is addressed in
+ * the board as square rows [0-2] and columns [0-2].
+ * \param squareX The x coordinate of the square.
+ * \param squareY The y coordinate of the square.
  */
 bool Board::validateSquare(int squareX, int squareY)const
 {
@@ -296,6 +332,13 @@ bool Board::validateSquare(int squareX, int squareY)const
     }
     return true;
 }
+
+/**
+ * Gets the value at the index.
+ *
+ * \param index The 1-dimensional position who's value we want.
+ * \return The value at that position, wether it is locked or not.
+ */
 int Board::valueAt(int index)const
 {
     if(fixed[index])
@@ -305,6 +348,9 @@ int Board::valueAt(int index)const
     return 0;
 }
 
+/**
+ * Display the board's numbers on the screen.
+ */
 void Board::drawNumbers()const
 {
     for(int i = 0 ; i != 9; ++i)
@@ -337,12 +383,15 @@ void Board::drawNumbers()const
         }
     return;
 }
-/// Helper function for display.
-///
-/// A valid position is one that is not inside a row, column, or square with diplicate numbers.
-/// \param x The x co-ordinare to check.
-/// \param y The y co-ordinate to check.
-/// \return Whether the position should be ok, or highlighted as an error.
+/**
+ * Helper function for display.
+ *
+ * A valid position is one that is not inside a row, column, or square with
+ * diplicate numbers.
+ * \param x The x co-ordinare to check.
+ * \param y The y co-ordinate to check.
+ * \return Whether the position should be ok, or highlighted as an error.
+ */
 bool Board::validPosition(int x, int y)const
 {
     return !(invalidCols[x]||invalidRows[y]||
@@ -390,7 +439,16 @@ void Board::load(istream& in)
 }
 
 /**
- * Saves the current grid to a file specified by the user
+ * Saves the playing board to a file.
+ *
+ * The file format is simple, a blank in the board is denoted by 0, and a given
+ * number is denoted by it's character. For example, 6 in the board will be the
+ * character '6' in the file. The line of text will contain all 81 positions in
+ * the board ordered from left to right, and top to bottom.
+ *
+ * \param out A stream opened for writing and truncated.  One or two lines will
+ * be printed to the file. The second line only appear if there are any numbers
+ * input by the player.
  */
 void Board::save(ostream& out)const
 {
@@ -402,12 +460,13 @@ void Board::save(ostream& out)const
         out<<oss.str()<<endl;
 }
 
-/// Helper function for computations.
-///
-/// If we look at the board as a 3 by 3 grid or 3 by 3 squares, and
-/// further, a total grid of numbers that is 9 by 9. This function maps
-/// row and column co-ordinates from the board level, to thw row and
-/// column of the square is belongs to.
+/** Helper function for computations.
+ *
+ * If we look at the board as a 3 by 3 grid or 3 by 3 squares, and
+ * further, a total grid of numbers that is 9 by 9. This function maps
+ * row and column co-ordinates from the board level, to thw row and
+ * column of the square is belongs to.
+ */
 int Board::getSquareIndexFromBoardIndex(int index)const
 {
     int col = indexToX(index);
@@ -418,8 +477,9 @@ int Board::getSquareIndexFromBoardIndex(int index)const
 }
 
 /**
- * Loads a text file containing a line of 81 numbers that
- * will be inserted into the grid.
+ * Prompt the user for a file to load.
+ *
+ * The user may type a full or relative path to a puzzle file to load.
  */
 void Board::loadFile()
 {
@@ -442,7 +502,9 @@ void Board::loadFile()
 }
 
 /**
- * Prompts the user to enter a file name where the puzzle will be saved.
+ * Prompt the user for a file to save.
+ *
+ * The user may type a full or relative path to a puzzle file to save.
  */
 void Board::saveFile()const
 {
@@ -466,7 +528,10 @@ void Board::saveFile()const
 }
 
 /**
- * Awaits user input to start playing
+ * Main game loop.
+ *
+ * Draw initial screen, then loop taking user input until the user hits the \e
+ * 'Q' key.
  */
 void Board::play()
 {
@@ -529,7 +594,10 @@ void Board::play()
 }
 
 /**
+ * Helper function.
  *
+ * \param x The column.
+ * \return The leftmost screen column inside this column.
  */
 int Board::getSquareX(int x){
     int i = x*4 +3;
@@ -540,12 +608,20 @@ int Board::getSquareX(int x){
     return i;
 }
 
+/**
+ * Helper function.
+ *
+ * \param y The row.
+ * \return The topmost screen row inside this row.
+ */
 int Board::getSquareY(int y){
     return 2*y +2;
 }
 
 /**
  * Generates a grid containing valid random numbers.
+ *
+ * \todo Fix this method.
  */
 void Board::generateRandomGrid()
 {
@@ -639,6 +715,9 @@ vector<int> Board::getAllIndicesInSameSquare(int K)const{
  * Solves the puzzle by iterating through each row, column and subgrid.
  * Each cell (0-81) contains a vector of 9 elements. The current value is
  * removed from the vector of each corresponding row, column and subgrid.
+ *
+ * \todo This method is currently broken, it only partially solves the board.
+ * It should be considered a hint function for the moment.
  */
 void Board::generateSolution(map<int, vector<int> >& slnMap)
 {
