@@ -1,0 +1,24 @@
+Basic Sudoku
+
+To build, extract the archive with
+  $ tar xzf ling-analie-sudoku-0.0.1.tar.bz
+
+Then execute
+
+  $ cd ling-analie-sudoku-0.0.1
+  $ ./configure && make
+
+You may now run the game with the command
+  $ ./src/sudoku
+
+If you do not hae ncurses or equivalent library you may obtain it at
+http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.7.tar.gz
+
+If you wish to build in windows, please ensure you have a working curses
+directory, that you have the path to headers and libraries set, and finally you
+link against your curses library.
+
+
+Some puzzles are included in the levels subdirectory.
+
+The doxygen documents are in the documentation subfolder.
