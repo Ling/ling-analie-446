@@ -1,0 +1,104 @@
+\documentclass[12pt]{article}
+
+\usepackage{setspace}
+
+%\usepackage{pxfonts}
+\usepackage[usenames,dvipsnames]{color}
+
+\author{Ling Lin}
+\title{Individual Experience Report}
+
+\begin{document}
+\maketitle
+
+\section{What I learned in the project.}
+During the course of the project I learned many things about c++, which I did
+not know from the experience doing the assignments and reading the slides.
+
+
+I learned much about project management.  I took this course concurrently with
+the \emph{COMP354 - Software Engineering I} class.  I applied some concepts I
+learned in that class.  I got to practice things like UML while discussing
+points with my teammate, and elaborating our design.  The use was a little bit
+frivolous, as we only had two classes and they didn't interact that much; most
+of the functionnality ended up in the \texttt{Board} class.
+
+I also learned the use of the gcc compiler more closely.  I learned about
+seperating the building of the project into compiling the different
+\emph{compilation units}, i.e. \textit{file}.cpp into the object files
+\textit{file}.o or \textit{file}.obj using gcc's compiling facilities.  The
+second step being to gather all the object files into an executable using gcc's
+linking functionnality.
+
+Finally, I learned some basic typesetting software, \LaTeXe, from a few
+students in the 446 class, which I used to typeset this document as well as the
+proposal.  I think it makes professional looking documents and will definitely
+try to use it in preference to Microsoft's \emph{Word}. I also wish to learn
+how to use it to create math formul\ae.
+
+\section{What I wanted from the project.}
+I had planned to use some type of version control for the development of the
+project.  However it was too hard to understand and learn while trying to think
+about the c++ I had to write for the team.  Unfortunately, my teammate and I
+didn't really use the system.  We ended up exchanging zip files over email and
+posting them on a google group.
+
+Also, I really hoped I would be able to design and implement an algorithm to
+solve a sudoku puzzle.  Again, I was not able to meet this expectation: our
+current implementation only works sometimes, and doesn't solve the whole board.
+
+\section{Thoughts About C++.}
+\subsection{Likes}
+I feel that c++ takes less code to do the same thing as it would in java.  It feels much simpler than java.  I like that starting out a new class or program involves much less \emph{support syntax}. C++ is cleaner such as:
+
+\begin{verbatim}
+class A{
+  void b(){cout<<"Hello, world!<<endl
+};
+
+int main(){
+  A a;
+  a.b();
+  return 0;
+}
+\end{verbatim}
+
+against Java's:
+
+\begin{verbatim}
+public class A{
+  public static void main(String[] ...
+  ...
+  void b(){...}
+}
+\end{verbatim}
+
+The final thing I like is the seperation between the definition of a class in its header, and the definition of the methods in a \emph{cpp} file.
+
+\subsection{Dislikes}
+While I do like do be able to split the complete definition of a clas into 
+interface and implementation as we learned in class, I do find C++'s syntax 
+wierd.  Having learned Java as my first programming langue, I am more used to 
+its syntax.  I find it wierd that when you put stuff in the \emph{cpp} file you 
+have to add class:: in front of all the methods when you write their code.
+
+I also find the \textit{<<} output syntax ugly and harder to read.  I prefer using + between strings.
+
+\section{Thoughts About COMP 446.}
+
+On a general note I am glad of choosing this class.  Peter Grogono, was the best professor I've had at Concordia, the others I had this semester being very bad. I appreciated the very quick feedback he gave on all class related things.
+
+I enjoyed the chance to take this class.
+
+\subsection{Liked}
+I really enjoyed the class notes.  I found them easy to understand, and I learned most of the material by reading them.  It was useful to review when trying the assignments and I couldn't remember how to write something.
+notes, well written, useful.
+
+I liked the participation in the class.  Many people asked questions and helped make some things that were less clear.
+
+\subsection{Didn't like}
+
+There are a few problem with the class.  I did not like the environment for the presentation sometimes.  The combination of a dark room, with slide, and a gentle voice lecturing made it easy to my mind to wander and lose track of the class.
+
+My other complaint was a few of the other students.  They kept asking questions I didn't really understand, and I feel they were not really related to the presentation.  I feel they already know c++ and asked questions that were not on the same level as everyone else.
+\end{document}
